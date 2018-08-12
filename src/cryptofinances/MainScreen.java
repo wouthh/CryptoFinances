@@ -108,8 +108,17 @@ public class MainScreen extends javax.swing.JFrame {
 
     private void calcCaps() {
         double total = 0.0;
+        ArrayList<HashMap> toRemove = new ArrayList<>();
+        // Remove USDT as it's the equivalent of USD
         for (int i = 0; i < cap.size(); i++) {
-            total += Double.parseDouble(String.valueOf(cap.get(i).get("market_cap_usd")));
+            if (!cap.get(i).get("symbol").equals("USDT")) {
+                total += Double.parseDouble(String.valueOf(cap.get(i).get("market_cap_usd")));
+            } else {
+                toRemove.add(cap.get(i));
+            }
+        }
+        for (int i = 0; i < toRemove.size(); i++) {
+            cap.remove(toRemove.get(i));
         }
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
         String finalAmount = formatter.format(total);
@@ -338,21 +347,25 @@ public class MainScreen extends javax.swing.JFrame {
                 if (Integer.parseInt(this.contractDataTable.getModel().getValueAt(i, 3).toString()) > 0) {
                     this.contractTypeComboBox.addItem(this.contractDataTable.getModel().getValueAt(i, 0).toString());
                     if (setContactPrice) {
-                        this.contractPrice.setText(this.contractDataTable.getModel().getValueAt(i, 1).toString());
-                        this.contractDays.setText(this.contractDataTable.getModel().getValueAt(i, 3).toString());
-                        String timeAsDate = df2.format((new Date()).getTime() - Long.parseLong(feeData.get(i).get("days").toString()) * 86400000L);
-                        boolean foundPrice = false;
-                        int counter = 0;
-                        do {
-                            if (!bitcoinHistory.containsKey(timeAsDate)) {
-                                counter++;
-                                timeAsDate = df2.format((new Date()).getTime() - (Long.parseLong(feeData.get(i).get("days").toString()) - counter) * 86400000L);
-                            } else {
-                                foundPrice = true;
-                            }
-                        } while (!foundPrice);
-                        this.contractBitcoinPrice.setText(bitcoinHistory.get(timeAsDate).toString());
-                        setContactPrice = false;
+                        try {
+                            this.contractPrice.setText(this.contractDataTable.getModel().getValueAt(i, 1).toString());
+                            this.contractDays.setText(this.contractDataTable.getModel().getValueAt(i, 3).toString());
+                            String timeAsDate = df2.format((new Date()).getTime() - Long.parseLong(feeData.get(i).get("days").toString()) * 86400000L);
+                            boolean foundPrice = false;
+                            int counter = 0;
+                            do {
+                                if (!bitcoinHistory.containsKey(timeAsDate)) {
+                                    counter++;
+                                    timeAsDate = df2.format((new Date()).getTime() - (Long.parseLong(feeData.get(i).get("days").toString()) - counter) * 86400000L);
+                                } else {
+                                    foundPrice = true;
+                                }
+                            } while (!foundPrice);
+                            this.contractBitcoinPrice.setText(bitcoinHistory.get(timeAsDate).toString());
+                            setContactPrice = false;
+                        } catch (Exception e) {
+                            break;
+                        }
                     }
                 }
             }
