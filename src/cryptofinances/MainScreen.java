@@ -159,17 +159,15 @@ public class MainScreen extends javax.swing.JFrame {
                         }
                     }
                 }
-                selectedCoins = selectCoins();
-                String[] coins = selectedCoins.split(", ");
-                for (int i = 0; i < coins.length; i++) {
-                    this.coinComboBox.addItem(coins[i]);
-                }
+                populateCoinSelector();
             } else {
                 this.enterPercentage.setText((String) loaded.getOrDefault("enterPercentage", "2.00"));
                 this.exitPercentage.setText((String) loaded.getOrDefault("exitPercentage", "0.50"));
             }
         } catch (FileNotFoundException ex) {
-
+            if (!first) {
+                populateCoinSelector();
+            }
         } catch (IOException ex) {
 
         } catch (ClassNotFoundException ex) {
@@ -185,6 +183,17 @@ public class MainScreen extends javax.swing.JFrame {
             } catch (IOException ex) {
 
             }
+        }
+    }
+
+    private void populateCoinSelector() {
+        selectedCoins = selectCoins();
+        if (selectedCoins.isEmpty()) {
+            return;
+        }
+        String[] coins = selectedCoins.split(", ");
+        for (int i = 0; i < coins.length; i++) {
+            this.coinComboBox.addItem(coins[i]);
         }
     }
 
@@ -1861,7 +1870,7 @@ public class MainScreen extends javax.swing.JFrame {
 
         contractDataTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"SHA256 (TH/s)", "30.00", "0.2", "0", "0.00000000", "0.00", "0", "0.00000000", "BTC", null,  new Boolean(true)},
+                {"SHA256 (TH/s)", "30.00", "0.2", "1825", "0.00000000", "0.00", "0", "0.00000000", "BTC", null,  new Boolean(true)},
                 {"Scrypt (MH/s)", "28.00", "2", "730", "0.00000000", "0.00", "0", "0.00000000", "LTC", null,  new Boolean(true)},
                 {"X11 (MH/s)", "30.00", "5", "730", "0.00000000", "0.00", "0", "0.00000000", "DASH", null,  new Boolean(true)},
                 {"Dagger-Hashimoto (MH/s)", "29.99", "1", "730", "0.00000000", "0.00", "0", "0.00000000", "ETH", null,  new Boolean(true)},
