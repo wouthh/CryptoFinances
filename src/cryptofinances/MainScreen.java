@@ -159,17 +159,15 @@ public class MainScreen extends javax.swing.JFrame {
                         }
                     }
                 }
-                selectedCoins = selectCoins();
-                String[] coins = selectedCoins.split(", ");
-                for (int i = 0; i < coins.length; i++) {
-                    this.coinComboBox.addItem(coins[i]);
-                }
+                populateCoinSelector();
             } else {
                 this.enterPercentage.setText((String) loaded.getOrDefault("enterPercentage", "2.00"));
                 this.exitPercentage.setText((String) loaded.getOrDefault("exitPercentage", "0.50"));
             }
         } catch (FileNotFoundException ex) {
-
+            if (!first) {
+                populateCoinSelector();
+            }
         } catch (IOException ex) {
 
         } catch (ClassNotFoundException ex) {
@@ -185,6 +183,17 @@ public class MainScreen extends javax.swing.JFrame {
             } catch (IOException ex) {
 
             }
+        }
+    }
+
+    private void populateCoinSelector() {
+        selectedCoins = selectCoins();
+        if (selectedCoins.isEmpty()) {
+            return;
+        }
+        String[] coins = selectedCoins.split(", ");
+        for (int i = 0; i < coins.length; i++) {
+            this.coinComboBox.addItem(coins[i]);
         }
     }
 
