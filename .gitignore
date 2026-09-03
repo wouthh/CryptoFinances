@@ -4,6 +4,9 @@
 # Log file
 *.log
 
+# Local serialized runtime state (may contain personal financial data)
+*.dat
+
 # BlueJ files
 *.ctxt
 
